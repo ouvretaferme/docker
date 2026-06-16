@@ -28,7 +28,7 @@ RUN pecl install -o -f redis \
     &&  rm -rf /tmp/pear \
     &&  docker-php-ext-enable redis
 
-RUN pecl install yamL \
+RUN pecl install yaml \
     && docker-php-ext-enable yaml
 
 RUN pecl install oauth \

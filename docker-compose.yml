@@ -117,11 +117,17 @@ services:
     environment:
       - TZ=Europe/Paris
     labels:
-      - 'traefik.http.routers.otf.rule=HostRegexp(`^.+\.dev-ouvretaferme.org`) || HostRegexp(`^.+\.dev-ouvretaferme.localhost`)'
-      - 'traefik.http.middlewares.limit.buffering.maxRequestBodyBytes=20000000'
-      - 'traefik.port=80'
       - 'traefik.enable=true'
       - 'traefik.docker.network=traefik_default'
+      - 'traefik.http.routers.otf.rule=HostRegexp(`^.+\.dev-ouvretaferme.org`) || HostRegexp(`^.+\.dev-ouvretaferme.localhost`)'
+      - 'traefik.http.routers.otf.entrypoints=web'
+      - 'traefik.http.routers.otf-secure.rule=HostRegexp(`^.+\.dev-ouvretaferme.org`) || HostRegexp(`^.+\.dev-ouvretaferme.localhost`)'
+      - 'traefik.http.routers.otf-secure.entrypoints=websecure'
+      - 'traefik.http.routers.otf-secure.tls=true'
+      - 'traefik.http.routers.otf-secure.middlewares=https-to-http'
+      - 'traefik.http.middlewares.https-to-http.redirectscheme.scheme=http'
+      - 'traefik.http.middlewares.https-to-http.redirectscheme.permanent=false'
+      - 'traefik.http.middlewares.limit.buffering.maxRequestBodyBytes=20000000'
   metabase:
     container_name: metabase-otf
     image: metabase/metabase:latest
