@@ -1,6 +1,7 @@
-[submodule "doc"]
-	path = doc
-	url = https://github.com/ouvretaferme/documentation.git
 [submodule "src"]
 	path = src
 	url = https://github.com/vingtcent123/ouvretaferme.git
+[submodule "doc"]
+	path = doc
+	url = git@github.com:ouvretaferme/ouvretaferme.wiki.git
+	branch = master

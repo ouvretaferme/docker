@@ -1,4 +1,9 @@
-FROM php:8.4-fpm
+# Base sur Debian bookworm (12) et non trixie (13).
+# Trixie ne fournit qu'ImageMagick 7.1.1-43, dont identifyFormat('%[exif:...]') déclenche
+# une assertion native (MagickCore exception.c:1117 -> SIGABRT) qui tue le worker php-fpm
+# à chaque upload de photo contenant de l'EXIF (-> 502 Bad Gateway).
+# Bookworm fournit ImageMagick 6.9.11, soit la même branche 6.9 que la prod (6.9.12), qui fonctionne.
+FROM php:8.4-fpm-bookworm
 RUN apt-get update && apt-get install -y \
 		libfreetype-dev \
 		libjpeg62-turbo-dev \
@@ -18,8 +23,17 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install exif \
     && docker-php-ext-install bcmath
 
-# Chromium headless
-RUN apt-get install -y chromium
+# Chromium headless — épinglé à 147.
+# La 150.0.7871.46 (bookworm-security) crashe (SIGTRAP, exit 133) sur TOUT print-to-pdf en arm64,
+# ce qui casse tous les PDF comptables (grand-livre, bilan, résultat…) rendus via nodejs/pdf.js.
+# Google Chrome n'ayant pas de build Linux arm64, on reste sur le chromium Debian mais figé sur la
+# 147 (bookworm main, qui imprime), et on pose un pin apt pour que security ne réintroduise pas la 150.
+ARG CHROMIUM_VERSION=147.0.7727.137-1~deb12u1
+RUN apt-get update && apt-get install -y --allow-downgrades \
+        chromium=${CHROMIUM_VERSION} \
+        chromium-common=${CHROMIUM_VERSION} \
+        chromium-sandbox=${CHROMIUM_VERSION} \
+    && printf 'Package: chromium*\nPin: version %s\nPin-Priority: 1001\n' "${CHROMIUM_VERSION}" > /etc/apt/preferences.d/chromium-pin
 RUN ln -sf /usr/lib/chromium/chromium /usr/bin/google-chrome
 
 RUN ln -sf /bin/bash /bin/sh

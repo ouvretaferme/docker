@@ -75,23 +75,6 @@ services:
       - app-tier
     extra_hosts:
       - "pma.dev-ouvretaferme.org:host-gateway" # accès depuis pma.dev-ouvretaferme.org:100
-  doc:
-    container_name: otf-doc
-    build:
-      context: .
-      dockerfile: docker/doc/Dockerfile
-    volumes:
-      - ./doc:/app
-    ports:
-      - "200:8000"
-    environment:
-      - MKDOCS_DEV_ADDR=0.0.0.0:8000
-      - WATCHDOG_DEBUG=1
-      - WATCHDOG_POLLING_INTERVAL=0.5
-    command: mkdocs serve -a 0.0.0.0:8000 --dirtyreload --dev-addr=0.0.0.0:8000
-
-    networks:
-      - app-tier
   web-otf:
     container_name: web-otf
     image: nginx:latest
@@ -124,9 +107,6 @@ services:
       - 'traefik.http.routers.otf-secure.rule=HostRegexp(`^.+\.dev-ouvretaferme.org`) || HostRegexp(`^.+\.dev-ouvretaferme.localhost`)'
       - 'traefik.http.routers.otf-secure.entrypoints=websecure'
       - 'traefik.http.routers.otf-secure.tls=true'
-      - 'traefik.http.routers.otf-secure.middlewares=https-to-http'
-      - 'traefik.http.middlewares.https-to-http.redirectscheme.scheme=http'
-      - 'traefik.http.middlewares.https-to-http.redirectscheme.permanent=false'
       - 'traefik.http.middlewares.limit.buffering.maxRequestBodyBytes=20000000'
   metabase:
     container_name: metabase-otf
@@ -148,6 +128,27 @@ services:
     volumes:
       # Volumes where Metabase data will be persisted
       - ./docker/metabase:/metabase-data
+  flutter-otf:
+    container_name: flutter-otf
+    build:
+      context: .
+      dockerfile: docker/flutter/Dockerfile
+    volumes:
+      - ./mobile:/app
+    working_dir: /app
+    ports:
+      # Serveur web Flutter de dev : flutter run -d web-server --web-port 8080
+      - '8088:8080'
+    environment:
+      - TZ=Europe/Paris
+    networks:
+      - app-tier
+    # TTY + stdin ouverts : permet `docker attach flutter-otf` pour piloter flutter run
+    # (r = hot reload, R = hot restart, q = quitter). Détacher avec Ctrl-P puis Ctrl-Q.
+    stdin_open: true
+    tty: true
+    # Sert l'app sur :8080 (mappé sur l'hôte :8088). pub get au boot pour robustesse.
+    command: sh -c "flutter pub get && flutter run -d web-server --web-port 8080 --web-hostname 0.0.0.0"
 volumes:
   static:
   db:
