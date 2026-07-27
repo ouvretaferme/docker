@@ -8,3 +8,6 @@
 [submodule "phpstorm-plugin"]
 	path = phpstorm-plugin
 	url = git@github.com:ouvretaferme/plugin-phpstorm.git
+[submodule "api-doc"]
+	path = api-doc
+	url = git@github.com:ouvretaferme/api-doc.git
