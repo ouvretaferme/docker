@@ -2,6 +2,11 @@
 # pas d'accès réseau à l'exécution du conteneur — composer ne sert qu'en dev, ponctuellement).
 FROM composer:2 AS composer
 
+# Node récupéré depuis l'image officielle, même principe que composer ci-dessus.
+# Sert au rendu PDF (ouvretaferme/main/nodejs/pdf.js, piloté par History.l.php).
+# Le paquet apt bookworm ne fournit que du 18, on préfère une LTS à jour.
+FROM node:22-bookworm-slim AS node
+
 # Base sur Debian bookworm (12) et non trixie (13).
 # Trixie ne fournit qu'ImageMagick 7.1.1-43, dont identifyFormat('%[exif:...]') déclenche
 # une assertion native (MagickCore exception.c:1117 -> SIGABRT) qui tue le worker php-fpm
@@ -82,9 +87,10 @@ RUN docker-php-ext-install xml
 RUN sed -i 's/listen = /;listen = /' /usr/local/etc/php-fpm.d/www.conf
 
 # Node for chromium
-RUN apt-get update && apt-get install -y \
-    npm \
-    && npm update npm -g
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
+COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+    && ln -sf /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
 
 WORKDIR /
 

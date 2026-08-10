@@ -6,3 +6,15 @@ docker/mysql/tmp/*
 src/
 docker/php-fpm/tmp/*
 docker/php-fpm/otf-storage
+
+# Authentification du CLI Stripe (`stripe login`) + cache des plugins téléchargés.
+# Contient une clé secrète de test (sk_test_...) : le dossier est monté sur
+# /root/.config/stripe pour survivre aux recréations du conteneur, jamais versionné.
+docker/php-fpm/stripe-config/*
+!docker/php-fpm/stripe-config/.gitkeep
+
+# Données applicatives des conteneurs (dumps anonymisés, base Metabase, datadir MySQL)
+docker/mysql/*.tar.gz
+docker/mysql/var/
+docker/metabase/*
+!docker/metabase/.gitkeep

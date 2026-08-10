@@ -50,6 +50,11 @@ services:
       - type: bind
         source: ./docker/php-fpm/tmp
         target: /tmp/shared
+      # Persiste le `stripe login` du CLI (binaire dans tmp/) entre les recréations du conteneur,
+      # nécessaire à `stripe listen` qui relaie les webhooks Connect vers /webhook/stripe.
+      - type: bind
+        source: ./docker/php-fpm/stripe-config
+        target: /root/.config/stripe
     networks:
       - app-tier
     build:
@@ -102,9 +107,9 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=traefik_default'
-      - 'traefik.http.routers.otf.rule=HostRegexp(`^.+\.dev-ouvretaferme.org`) || HostRegexp(`^.+\.dev-ouvretaferme.localhost`)'
+      - 'traefik.http.routers.otf.rule=HostRegexp(`^.+\.dev-ouvretaferme.org`) || HostRegexp(`^.+\.dev-ouvretaferme.localhost`) || Host(`dev-ouvretaferme.org`)'
       - 'traefik.http.routers.otf.entrypoints=web'
-      - 'traefik.http.routers.otf-secure.rule=HostRegexp(`^.+\.dev-ouvretaferme.org`) || HostRegexp(`^.+\.dev-ouvretaferme.localhost`)'
+      - 'traefik.http.routers.otf-secure.rule=HostRegexp(`^.+\.dev-ouvretaferme.org`) || HostRegexp(`^.+\.dev-ouvretaferme.localhost`) || Host(`dev-ouvretaferme.org`)'
       - 'traefik.http.routers.otf-secure.entrypoints=websecure'
       - 'traefik.http.routers.otf-secure.tls=true'
       - 'traefik.http.middlewares.limit.buffering.maxRequestBodyBytes=20000000'
