@@ -66,8 +66,13 @@ RUN pecl install yaml \
 RUN pecl install oauth \
     && docker-php-ext-enable oauth
 
+# librsvg2-bin fournit rsvg-convert, que le delegates.xml d'ImageMagick appelle déjà pour décoder
+# le SVG (<delegate decode="svg" command="rsvg-convert …">) : sans le binaire, la ligne reste sans
+# effet et le rendu retombe silencieusement sur le moteur SVG interne (MSVG), bien plus approximatif
+# sur les fichiers réels (polices, masques, filtres). Les autres paquets rsvg sont déjà là, tirés en
+# dépendance — seul le binaire manquait.
 RUN apt-get update -yqq \
-    && apt-get install -y libmagickwand-dev imagemagick
+    && apt-get install -y libmagickwand-dev imagemagick librsvg2-bin
 
 RUN docker-php-ext-install mysqli pdo pdo_mysql && docker-php-ext-enable pdo_mysql
 RUN docker-php-ext-install curl
