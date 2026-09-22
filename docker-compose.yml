@@ -1,3 +1,6 @@
+# Toute publication de port se lie à 127.0.0.1. Sans adresse, Docker publie sur 0.0.0.0 et expose
+# le service à tout le réseau local. Aucun accès n'en dépend : les noms *.dev-ouvretaferme.org
+# résolvent déjà vers la boucle locale, et les conteneurs se joignent par le réseau app-tier.
 services:
   mysql-otf:
     container_name: mysql-otf
@@ -16,7 +19,7 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
     restart: always
     ports:
-      - '3316:3306'
+      - '127.0.0.1:3316:3306'
     networks:
       - app-tier
   redis-otf:
@@ -27,7 +30,7 @@ services:
     networks:
       - app-tier
     ports:
-      - '6389:6379'
+      - '127.0.0.1:6389:6379'
     volumes:
       - redisData:/data
     environment:
@@ -36,7 +39,7 @@ services:
     container_name: php-fpm-otf
     user: 'root:users'
     ports:
-      - '90:80'
+      - '127.0.0.1:90:80'
     volumes:
       - type: bind
         source: ./src
@@ -73,7 +76,7 @@ services:
     depends_on:
       - mysql-otf
     ports:
-      - '100:80'
+      - '127.0.0.1:100:80'
     environment:
       PMA_HOST: mysql-otf
     networks:
@@ -84,7 +87,7 @@ services:
     container_name: web-otf
     image: nginx:latest
     ports:
-      - '80'
+      - '127.0.0.1::80'
     volumes:
       - sock:/tmp
       - type: bind
@@ -127,7 +130,7 @@ services:
     depends_on:
       - mysql-otf
     ports:
-      - '3000:3000'
+      - '127.0.0.1:3000:3000'
     networks:
       - app-tier
     volumes:
@@ -143,7 +146,7 @@ services:
     working_dir: /app
     ports:
       # Serveur web Flutter de dev : flutter run -d web-server --web-port 8080
-      - '8088:8080'
+      - '127.0.0.1:8088:8080'
     environment:
       - TZ=Europe/Paris
     networks:
