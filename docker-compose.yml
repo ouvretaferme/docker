@@ -116,26 +116,6 @@ services:
       - 'traefik.http.routers.otf-secure.entrypoints=websecure'
       - 'traefik.http.routers.otf-secure.tls=true'
       - 'traefik.http.middlewares.limit.buffering.maxRequestBodyBytes=20000000'
-  metabase:
-    container_name: metabase-otf
-    image: metabase/metabase:latest
-    restart: always
-    environment:
-      MB_DB_TYPE: 'mysql'
-      MB_DB_DBNAME: 'metabase'
-      MB_DB_PORT: '3306'
-      MB_DB_USER: 'root'
-      MB_DB_PASS: ''
-      MB_DB_HOST: 'mysql-otf'
-    depends_on:
-      - mysql-otf
-    ports:
-      - '127.0.0.1:3000:3000'
-    networks:
-      - app-tier
-    volumes:
-      # Volumes where Metabase data will be persisted
-      - ./docker/metabase:/metabase-data
   flutter-otf:
     container_name: flutter-otf
     build:

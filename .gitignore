@@ -13,8 +13,6 @@ docker/php-fpm/otf-storage
 docker/php-fpm/stripe-config/*
 !docker/php-fpm/stripe-config/.gitkeep
 
-# Données applicatives des conteneurs (dumps anonymisés, base Metabase, datadir MySQL)
+# Données applicatives des conteneurs (dumps anonymisés, datadir MySQL)
 docker/mysql/*.tar.gz
 docker/mysql/var/
-docker/metabase/*
-!docker/metabase/.gitkeep

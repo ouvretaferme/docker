@@ -74,6 +74,10 @@ RUN pecl install oauth \
 RUN apt-get update -yqq \
     && apt-get install -y libmagickwand-dev imagemagick librsvg2-bin
 
+# GoAccess produit le rapport d'accès Nginx lu depuis l'admin (security/cron/access:report, lot 3 du
+# chantier sécurité). Bookworm livre la 1.7, la prod (Ubuntu noble) la 1.8.1 : même log-format.
+RUN apt-get update && apt-get install -y goaccess
+
 RUN docker-php-ext-install mysqli pdo pdo_mysql && docker-php-ext-enable pdo_mysql
 RUN docker-php-ext-install curl
 
