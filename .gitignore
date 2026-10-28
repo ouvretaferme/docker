@@ -16,3 +16,12 @@ docker/php-fpm/stripe-config/*
 # Données applicatives des conteneurs (dumps anonymisés, datadir MySQL)
 docker/mysql/*.tar.gz
 docker/mysql/var/
+
+# Copie anonymisée des sauvegardes (export-anon.sh, import-anon.sh) : les clés publiques des
+# destinataires et des signataires et les réglages du poste, dont le mot de passe de dev, restent sur
+# le poste.
+docker/mysql/anon/destinataires/*
+!docker/mysql/anon/destinataires/.gitkeep
+docker/mysql/anon/signataires/*
+!docker/mysql/anon/signataires/.gitkeep
+docker/mysql/anon.conf
