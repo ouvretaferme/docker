@@ -3,7 +3,7 @@
 FROM composer:2 AS composer
 
 # Node récupéré depuis l'image officielle, même principe que composer ci-dessus.
-# Sert au rendu PDF (ouvretaferme/main/nodejs/pdf.js, piloté par History.l.php).
+# Sert au rendu PDF (main/main/nodejs/pdf.js, piloté par History.l.php).
 # Le paquet apt bookworm ne fournit que du 18, on préfère une LTS à jour.
 FROM node:22-bookworm-slim AS node
 
@@ -33,6 +33,8 @@ RUN apt-get update && apt-get install -y \
         vim \
         #composer
         unzip \
+        # git : la porte de push rejoue ses contrôles dans ce conteneur (main.py urgence-suite)
+        git \
 	&& docker-php-ext-configure gd --with-freetype --with-jpeg \
 	&& docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install exif \
@@ -46,7 +48,7 @@ RUN apt-get update && apt-get install -y \
 # Retesté avec la 150.0.7871.181 (bookworm-security) le 24/07 : le crash SIGTRAP est corrigé
 # (--print-to-pdf fonctionne, exit 0). On repasse donc sur une version 150 à jour, toujours épinglée
 # pour rester reproductible et pour ne pas se refaire surprendre par un futur apt upgrade silencieux.
-ARG CHROMIUM_VERSION=150.0.7871.181-1~deb12u1
+ARG CHROMIUM_VERSION=156.0.8078.47-1~deb12u1
 RUN apt-get update && apt-get install -y --allow-downgrades \
         chromium=${CHROMIUM_VERSION} \
         chromium-common=${CHROMIUM_VERSION} \

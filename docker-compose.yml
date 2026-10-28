@@ -51,7 +51,7 @@ services:
       - ./docker/php-fpm/www.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro
       - ./docker/php-fpm/php.ini:/usr/local/etc/php/conf.d/php.ini:ro
       # Liste blanche des formats d'ImageMagick, la même qu'en production (migration/2026-10-21-securite-imagemagick-policy.md)
-      - ./src/ouvretaferme/main/conf/imagemagick/policy.xml:/etc/ImageMagick-6/policy.xml:ro
+      - ./src/main/main/conf/imagemagick/policy.xml:/etc/ImageMagick-6/policy.xml:ro
       - type: bind
         source: ./docker/php-fpm/tmp
         target: /tmp/shared
@@ -98,7 +98,7 @@ services:
       - type: bind
         source: ./docker/php-fpm/otf-storage
         target: /var/www/storage/
-      - ./src/ouvretaferme/main/conf/rewrite/dev.cfg:/etc/nginx/conf.d/nginx-otf.conf
+      - ./src/main/main/conf/rewrite/dev.cfg:/etc/nginx/conf.d/nginx-otf.conf
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php-fpm-otf
