@@ -71,20 +71,6 @@ services:
     extra_hosts:
       - "www.dev-ouvretaferme.org:host-gateway"
       - "www.dev-ouvretaferme.localhost:host-gateway"
-  phpmyadmin:
-    container_name: pma-otf
-    image: phpmyadmin
-    restart: always
-    depends_on:
-      - mysql-otf
-    ports:
-      - '127.0.0.1:100:80'
-    environment:
-      PMA_HOST: mysql-otf
-    networks:
-      - app-tier
-    extra_hosts:
-      - "pma.dev-ouvretaferme.org:host-gateway" # accès depuis pma.dev-ouvretaferme.org:100
   web-otf:
     container_name: web-otf
     image: nginx:latest
@@ -118,27 +104,6 @@ services:
       - 'traefik.http.routers.otf-secure.entrypoints=websecure'
       - 'traefik.http.routers.otf-secure.tls=true'
       - 'traefik.http.middlewares.limit.buffering.maxRequestBodyBytes=20000000'
-  flutter-otf:
-    container_name: flutter-otf
-    build:
-      context: .
-      dockerfile: docker/flutter/Dockerfile
-    volumes:
-      - ./mobile:/app
-    working_dir: /app
-    ports:
-      # Serveur web Flutter de dev : flutter run -d web-server --web-port 8080
-      - '127.0.0.1:8088:8080'
-    environment:
-      - TZ=Europe/Paris
-    networks:
-      - app-tier
-    # TTY + stdin ouverts : permet `docker attach flutter-otf` pour piloter flutter run
-    # (r = hot reload, R = hot restart, q = quitter). Détacher avec Ctrl-P puis Ctrl-Q.
-    stdin_open: true
-    tty: true
-    # Sert l'app sur :8080 (mappé sur l'hôte :8088). pub get au boot pour robustesse.
-    command: sh -c "flutter pub get && flutter run -d web-server --web-port 8080 --web-hostname 0.0.0.0"
 volumes:
   static:
   db:

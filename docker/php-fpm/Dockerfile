@@ -40,7 +40,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install exif \
     && docker-php-ext-install bcmath
 
-# Chromium headless — épinglé à 150.0.7871.181.
+# Chromium headless — épinglé à 156.0.8078.79.
 # La 150.0.7871.46 (bookworm-security, ancienne) crashait (SIGTRAP, exit 133) sur TOUT print-to-pdf
 # en arm64, ce qui cassait tous les PDF comptables (grand-livre, bilan, résultat…) rendus via
 # nodejs/pdf.js. L'ancien pin sur la 147 (bookworm main) contournait ce crash, mais le mirror Debian
@@ -48,7 +48,7 @@ RUN apt-get update && apt-get install -y \
 # Retesté avec la 150.0.7871.181 (bookworm-security) le 24/07 : le crash SIGTRAP est corrigé
 # (--print-to-pdf fonctionne, exit 0). On repasse donc sur une version 150 à jour, toujours épinglée
 # pour rester reproductible et pour ne pas se refaire surprendre par un futur apt upgrade silencieux.
-ARG CHROMIUM_VERSION=156.0.8078.47-1~deb12u1
+ARG CHROMIUM_VERSION=156.0.8078.79-1~deb12u1
 RUN apt-get update && apt-get install -y --allow-downgrades \
         chromium=${CHROMIUM_VERSION} \
         chromium-common=${CHROMIUM_VERSION} \
