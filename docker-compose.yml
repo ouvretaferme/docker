@@ -98,9 +98,9 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=traefik_default'
-      - 'traefik.http.routers.otf.rule=HostRegexp(`^.+\.dev-ouvretaferme.org`) || HostRegexp(`^.+\.dev-ouvretaferme.localhost`) || Host(`dev-ouvretaferme.org`) || Host(`.+\.dev-circuitscourts.fr`)'
+      - 'traefik.http.routers.otf.rule=HostRegexp(`^.+\.dev-ouvretaferme.org`) || HostRegexp(`^.+\.dev-ouvretaferme.localhost`) || Host(`dev-ouvretaferme.org`) ||  HostRegexp(`^.+\.dev-circuitscourts.fr`)'
       - 'traefik.http.routers.otf.entrypoints=web'
-      - 'traefik.http.routers.otf-secure.rule=HostRegexp(`^.+\.dev-ouvretaferme.org`) || HostRegexp(`^.+\.dev-ouvretaferme.localhost`) || Host(`dev-ouvretaferme.org`) || Host(`.+\.dev-circuitscourts.fr`)'
+      - 'traefik.http.routers.otf-secure.rule=HostRegexp(`^.+\.dev-ouvretaferme.org`) || HostRegexp(`^.+\.dev-ouvretaferme.localhost`) || Host(`dev-ouvretaferme.org`) ||  HostRegexp(`^.+\.dev-circuitscourts.fr`)'
       - 'traefik.http.routers.otf-secure.entrypoints=websecure'
       - 'traefik.http.routers.otf-secure.tls=true'
       - 'traefik.http.middlewares.limit.buffering.maxRequestBodyBytes=20000000'
