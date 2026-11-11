@@ -8,7 +8,12 @@ Vous trouverez les instructions d'installation de ouvretaferme ici : https://git
 Cette instance est adaptée pour un test en local sur votre propre machine, mais **fortement déconseillée** en production.
 
 1. Installez docker pour votre OS selon https://docs.docker.com/engine/install/
-2. Cloner le repo qui permet l'utilisation de [Traefik](https://doc.traefik.io/traefik/) dans un nouveau dossier (n'importe où) : `git clone git@github.com:emilieguth/traefik.git .` et suivre les instructions de ce nouveau repo. Ceci permettra d'avoir plusieurs conteneurs dockers qui écoutent sur le port 80.
+2. Cloner le repo qui permet l'utilisation de [Traefik](https://doc.traefik.io/traefik/) dans un dossier nommé `traefik` (placé n'importe où), puis le lancer. Ceci permettra d'avoir plusieurs conteneurs dockers qui écoutent sur le port 80.
+   * `git clone git@github.com:emilieguth/traefik.git traefik`
+   * `cd traefik`
+   * `docker compose up -d`
+
+   Le dossier doit s'appeler `traefik` : Docker nomme le réseau de Traefik d'après ce dossier (`<dossier>_default`), et le `docker-compose.yml` de ce repo attend le réseau `traefik_default`. Avec un autre nom, `docker-compose up` échoue sur « network traefik_default declared as external, but could not be found ». Pour vérifier, `docker network ls | grep traefik_default` doit rendre une ligne.
 2. Récupérez une base de données de démonstration au format SQL à cette adresse : https://media.ouvretaferme.org/demo.sql
 3. Puis exécutez les commandes suivantes (ces instructions sont aussi sur le repo [ouvretaferme](https://github.com/ouvretaferme/ouvretaferme-public)):
 
