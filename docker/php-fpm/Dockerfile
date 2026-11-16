@@ -12,7 +12,7 @@ FROM node:22-bookworm-slim AS node
 # une assertion native (MagickCore exception.c:1117 -> SIGABRT) qui tue le worker php-fpm
 # à chaque upload de photo contenant de l'EXIF (-> 502 Bad Gateway).
 # Bookworm fournit ImageMagick 6.9.11, soit la même branche 6.9 que la prod (6.9.12), qui fonctionne.
-FROM php:8.4-fpm-bookworm
+FROM php:8.5-fpm-bookworm
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 # Le conteneur tourne en root (cf. docker-compose.yml, user: 'root:users') : évite le warning composer.
